@@ -11,3 +11,8 @@
  :active-panel
  (fn [db _]
    (:active-panel db)))
+
+(re-frame/reg-sub
+ :matrix-size
+ (fn [db _]
+   (:matrix-size db)))

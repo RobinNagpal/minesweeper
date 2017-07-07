@@ -1,0 +1,10 @@
+/*.log
+/target
+/*-init.clj
+/resources/public/js/compiled
+/resources/public/css
+out
+target/
+.idea/
+bookings.iml
+resources/public/js/

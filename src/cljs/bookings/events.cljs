@@ -11,3 +11,8 @@
  :set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
+
+(re-frame/reg-event-db
+  :set-matrix-size
+  (fn [db [_ matrix-size]]
+    (assoc db :matrix-size matrix-size)))

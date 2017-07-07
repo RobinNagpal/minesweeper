@@ -3,19 +3,39 @@
             [reagent.core :as r])
   )
 
+(defn size-selection [step]
+  (let [matrix-size (r/atom 0)]
+    [:div [:h2 "Select the size of matrix you want to play with"]
+     [:div {:class "input-group" :style {:margin "40px 0px 0px 0px"}}
+      [:span {:class "input-group-addon"} "Size"]
+      [:input {:class "form-control" :type "number" :on-change #(reset! matrix-size (-> % .-target .-value))}]]
+     [:button {:class    "btn btn-primary"
+               :style    {:margin "40px 0px 0px 0px"}
+               :on-click #(do (re-frame/dispatch [:set-matrix-size @matrix-size])
+                              (reset! step "game"))} "Start"]]))
+
+(defn play-game []
+  (let [matrix-size (re-frame/subscribe [:matrix-size])]
+    [:div {:class "container"}
+     [:h2 "Select the squares that don't have mines"]
+     [:div {:style {:background-color "red" :padding "30px 30px 30px 30px"}}
+      [:div {:style {:width "600px" :height "600px"}}
+       (for [cell (range (* matrix-size matrix-size))]
+         [:div
+          {:style {:width (str (/ 100 matrix-size) "%") :height (str (/ 100 matrix-size) "%") :background-color "yellow"}}]
+         )]]]))
+
+
 
 (defn home-panel []
-  (let [name (re-frame/subscribe [:name])]
-
-    (let [matrix-size (r/atom 0)]
-      (fn []
-        [:div {:class "container" :style {:margin "100px 0px 0px 0px" :text-align "center"}}
-         [:div [:h2 "Select the size of matrix you want to play with"]
-          [:div {:class "input-group" :style {:margin "40px 0px 0px 0px"}}
-           [:span {:class "input-group-addon"} "Size"]
-           [:input {:class "form-control" :type "number" :on-change #(reset! matrix-size (-> % .-target .-value))}]]
-          [:button {:class "btn btn-primary" :style {:margin "40px 0px 0px 0px"} :on-click #(re-frame/dispatch [:set-matrix-size @matrix-size])} "Start"]
-          ]]))))
+  (let [name (re-frame/subscribe [:name])
+        step (r/atom "size-selection")]
+    (fn []
+      [:div {:class "container" :style {:margin "100px 0px 0px 0px" :text-align "center"}}
+       (condp = @step
+         "size-selection" [size-selection step]
+         "game" [play-game]
+         )])))
 
 
 ;; about
