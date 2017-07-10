@@ -15,23 +15,31 @@
                :on-click #(do (re-frame/dispatch [:set-matrix-size @matrix-size])
                               (re-frame/dispatch [:set-game-step "game"]))} "Start"]]))
 
+(defn zeroOrOne [] (int (/ (rand-int 10) 6)))
+
 
 (defn play-game []
   (let [matrix-size (re-frame/subscribe [:matrix-size])]
     [:div {:class "container"}
      [:h2 "Select the squares that don't have mines"]
-     [:div {:class "col-lg-2 col-md-2" }]
-     [:div {:class "col-lg-8 col-md-8" :style {:padding "50px 0px 50px 0px"} }
+     [:div {:class "col-lg-2 col-md-2"}]
+     [:div {:class "col-lg-8 col-md-8" :style {:padding "50px 0px 50px 0px"}}
       [:div
        (do (println (str "Matrix Size : " @matrix-size))
+
            (->
-             (for  [row (range @matrix-size)] (seq (range @matrix-size)))
-             (println))
+             (->>
+               (range @matrix-size)
+               (map (fn [_] 1 ) ,,,)
+               (map (fn [_] (for [x (range @matrix-size)] (zeroOrOne))) ,,,))
+             (println)
+             )
            (for [cell (range (* @matrix-size @matrix-size))]
-             ^{:key cell} [:div {:style {:width (str (/ 100 @matrix-size) "%")
+             ^{:key cell} [:div {:style {:width       (str (/ 100 @matrix-size) "%")
                                          :padding-top (str (/ 100 @matrix-size) "%")}
                                  :class "mine-box"}]))]]
-     [:div {:class "col-lg-2 col-md-2" }]]))
+     [:div {:class "col-lg-2 col-md-2"}]]))
+
 
 (defn home-panel []
   (let [name (re-frame/subscribe [:name])
@@ -41,6 +49,7 @@
        (condp = @step
          "size-selection" [size-selection]
          "game" [play-game])])))
+
 
 
 ;; about
