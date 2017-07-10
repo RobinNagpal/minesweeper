@@ -16,3 +16,9 @@
  :matrix-size
  (fn [db _]
    (:matrix-size db)))
+
+
+(re-frame/reg-sub
+  :game-step
+ (fn [db _]
+   (:game-step db)))

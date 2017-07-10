@@ -16,3 +16,8 @@
   :set-matrix-size
   (fn [db [_ matrix-size]]
     (assoc db :matrix-size matrix-size)))
+
+(re-frame/reg-event-db
+  :set-game-step
+  (fn [db [_ game-step]]
+    (assoc db :game-step game-step)))
