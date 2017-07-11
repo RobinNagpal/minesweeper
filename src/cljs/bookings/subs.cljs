@@ -22,3 +22,14 @@
   :game-step
  (fn [db _]
    (:game-step db)))
+
+
+(re-frame/reg-sub
+  :matrix-cells
+ (fn [db _]
+   (:matrix-cells db)))
+
+(re-frame/reg-sub
+  :user-selection-matrix
+ (fn [db _]
+   (:user-selection-matrix db)))
