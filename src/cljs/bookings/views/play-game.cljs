@@ -6,7 +6,6 @@
 
 (defn setUserSelection
   [row, col]
-  (println row col)
   (re-frame/dispatch [:mark-matrix-cell-as-selected row col]))
 
 
@@ -26,19 +25,27 @@
 
 
 
-(defn createGameRow [rowIndex row matrix-size]
-  (map-indexed (fn [columnIndex cell] ^{:key (str columnIndex rowIndex "mine-cell-" cell "-val")}
-  [:div {:style    {:width       (str (/ 100 matrix-size) "%")
-                    :padding-top (str (/ 100 matrix-size) "%")}
-         :class    "mine-box"
-         :on-click #(setUserSelection rowIndex columnIndex)
-         } cell]) row))
+(defn createGameRow [rowIndex row matrix-size user-selection-matrix]
+  (map-indexed
+    (fn [columnIndex cell]
+      (let
+        [userSelection (get (get user-selection-matrix rowIndex) columnIndex)]
+        (println "row-" rowIndex " col-" columnIndex " user-selection-" userSelection)
+        ^{:key (str columnIndex rowIndex "mine-cell-" cell "-val")}
+        [:div {:style
+                         {:width       (str (/ 100 matrix-size) "%")
+                          :padding-top (str (/ 100 matrix-size) "%")}
+               :class (if (= 1 userSelection) (if (= 1 cell) "dangerous-mine-box-selected" "safe-mine-box-selected") "mine-box")
+               :on-click #(setUserSelection rowIndex columnIndex)
+               } cell])) row))
 
 
 (defn play-game []
   (let [
         matrix-size (re-frame/subscribe [:matrix-size])
-        matrix-cells (re-frame/subscribe [:matrix-cells])]
+        matrix-cells (re-frame/subscribe [:matrix-cells])
+        user-selection-matrix (re-frame/subscribe [:user-selection-matrix])
+        ]
     (r/create-class
       {
        :component-did-mount
@@ -59,12 +66,13 @@
        (fn []
          (let
            [deref-matrix-size @matrix-size
-            deref-matrix-cells @matrix-cells]
+            deref-matrix-cells @matrix-cells
+            deref-user-selection-matrix @user-selection-matrix]
            [:div {:class "container"}
             [:h2 "Select the squares that don't have mines"]
             [:div {:class "col-lg-2 col-md-2"}]
             [:div {:class "col-lg-8 col-md-8" :style {:padding "50px 0px 50px 0px"}}
-             [:div (map-indexed #(createGameRow %1 %2 deref-matrix-size) deref-matrix-cells)]]
+             [:div (map-indexed #(createGameRow %1 %2 deref-matrix-size deref-user-selection-matrix) deref-matrix-cells)]]
             [:div {:class "col-lg-2 col-md-2"}]])
          )
        })))

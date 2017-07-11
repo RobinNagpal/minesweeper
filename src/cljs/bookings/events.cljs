@@ -37,7 +37,6 @@
 (re-frame/reg-event-db
   :set-user-selection-matrix
   (fn [db [_ user-selection-matrix]]
-    (println user-selection-matrix)
     (assoc db :user-selection-matrix user-selection-matrix)))
 
 
@@ -45,7 +44,6 @@
   :mark-matrix-cell-as-selected
   (fn [db [_ row col]]
     (let [user-selection-matrix (:user-selection-matrix (:db db))]
-      (println user-selection-matrix "  row-" row " col-" col)
       {:dispatch
        [:set-user-selection-matrix
         (update-in user-selection-matrix [row] (fn [row] (update-in row [col] (fn [_] 1) )))]})))

@@ -1,5 +1,6 @@
 @import "bootstrap/bootstrap.less";
 @import "site_variables";
+
 .mine-box{
   background-color: @mine-box-background-color;
   box-sizing: border-box;
@@ -12,6 +13,14 @@
   &:active {
     background-color: @mine-box-border-color;
   }
-
 }
 
+.safe-mine-box-selected {
+  &:extend(.mine-box);
+  background-color: #65ff37;
+}
+
+.dangerous-mine-box-selected {
+  &:extend(.mine-box);
+  background-color: #ff0000;
+}
