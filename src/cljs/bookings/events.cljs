@@ -46,23 +46,29 @@
     (let [user-selection-matrix (:user-selection-matrix db)]
       (assoc db :user-selection-matrix (update-in user-selection-matrix [row] (fn [row] (update-in row [col] (fn [_] 1))))))))
 
-(defn hasSteppedOnAMine [mineAndUserSelectionsMap] (some #(= 1 %) (flatten mineAndUserSelectionsMap)))
+(defn- hasSteppedOnAMine [mineAndUserSelectionsMap] (some #(= 1 %) (flatten mineAndUserSelectionsMap)))
 
-(def gameLostResult #(assoc % :game-status "LOST"))
+(defn- gameLostResult [db] (assoc db :game-status "LOST"))
+
+(defn- multiplyElementByElement [matrix1 matrix2] (map (fn [matrix-row user-selection-row] (map * matrix-row user-selection-row)) matrix1 matrix2))
+
+(defn- countNumberOfOccurrencesInMatrix [matrix element] (count (filterv #(= element %) (flatten matrix))))
+
+(defn- countSafeCells [matrix-cells] (countNumberOfOccurrencesInMatrix matrix-cells 0))
+
+(defn- countUserPlays [user-selections] (countNumberOfOccurrencesInMatrix user-selections 1))
+
+(defn- inProgressOrWonResult [db matrix-cells user-selection-matrix]
+  (assoc db :game-status
+            (if (= (countSafeCells matrix-cells) (countUserPlays user-selection-matrix) ) "WON" "IN_PROGRESS")))
 
 (re-frame/reg-event-db
   :update-game-status
   (fn [db [_]]
-    (println db)
     (let
       [user-selection-matrix (:user-selection-matrix db)
        matrix-cells (:matrix-cells db)]
-      (println user-selection-matrix)
-      (println matrix-cells)
-      (-> (map (fn [matrix-row user-selection-row] (map * matrix-row user-selection-row)) matrix-cells user-selection-matrix)
-          ((fn [multiplied] (println "Multiplied" multiplied) multiplied) ,,,)
+      (-> (multiplyElementByElement matrix-cells user-selection-matrix)
           (hasSteppedOnAMine)
-          (if ,,, (gameLostResult db)
-              (assoc db :game-status
-                        (if (every? #(= 1 %) (flatten user-selection-matrix)) "WON" "IN_PROGRESS"))))
+          (if,,, (gameLostResult db) (inProgressOrWonResult db matrix-cells user-selection-matrix)))
       )))
