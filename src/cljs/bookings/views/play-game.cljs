@@ -24,19 +24,18 @@
     [:initialize-user-selection-matrix (int matrix-size)]))
 
 
-
 (defn createGameRow [rowIndex row matrix-size user-selection-matrix]
   (map-indexed
     (fn [columnIndex cell]
       (let
         [userSelection (get (get user-selection-matrix rowIndex) columnIndex)]
-        (println "row-" rowIndex " col-" columnIndex " user-selection-" userSelection)
         ^{:key (str columnIndex rowIndex "mine-cell-" cell "-val")}
         [:div {:style
                          {:width       (str (/ 100 matrix-size) "%")
                           :padding-top (str (/ 100 matrix-size) "%")}
                :class (if (= 1 userSelection) (if (= 1 cell) "dangerous-mine-box-selected" "safe-mine-box-selected") "mine-box")
-               :on-click #(setUserSelection rowIndex columnIndex)
+               :on-click #(do (setUserSelection rowIndex columnIndex)
+                              (re-frame/dispatch [:update-game-status]))
                } cell])) row))
 
 

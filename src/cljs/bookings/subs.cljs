@@ -33,3 +33,8 @@
   :user-selection-matrix
  (fn [db _]
    (:user-selection-matrix db)))
+
+(re-frame/reg-sub
+  :game-status
+ (fn [db _]
+   (:game-status db)))

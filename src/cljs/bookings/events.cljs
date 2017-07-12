@@ -40,10 +40,29 @@
     (assoc db :user-selection-matrix user-selection-matrix)))
 
 
-(re-frame/reg-event-fx
+(re-frame/reg-event-db
   :mark-matrix-cell-as-selected
   (fn [db [_ row col]]
-    (let [user-selection-matrix (:user-selection-matrix (:db db))]
-      {:dispatch
-       [:set-user-selection-matrix
-        (update-in user-selection-matrix [row] (fn [row] (update-in row [col] (fn [_] 1) )))]})))
+    (let [user-selection-matrix (:user-selection-matrix db)]
+      (assoc db :user-selection-matrix (update-in user-selection-matrix [row] (fn [row] (update-in row [col] (fn [_] 1))))))))
+
+(defn hasSteppedOnAMine [mineAndUserSelectionsMap] (some #(= 1 %) (flatten mineAndUserSelectionsMap)))
+
+(def gameLostResult #(assoc % :game-status "LOST"))
+
+(re-frame/reg-event-db
+  :update-game-status
+  (fn [db [_]]
+    (println db)
+    (let
+      [user-selection-matrix (:user-selection-matrix db)
+       matrix-cells (:matrix-cells db)]
+      (println user-selection-matrix)
+      (println matrix-cells)
+      (-> (map (fn [matrix-row user-selection-row] (map * matrix-row user-selection-row)) matrix-cells user-selection-matrix)
+          ((fn [multiplied] (println "Multiplied" multiplied) multiplied) ,,,)
+          (hasSteppedOnAMine)
+          (if ,,, (gameLostResult db)
+              (assoc db :game-status
+                        (if (every? #(= 1 %) (flatten user-selection-matrix)) "WON" "IN_PROGRESS"))))
+      )))

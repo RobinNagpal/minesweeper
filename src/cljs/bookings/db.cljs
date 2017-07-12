@@ -6,4 +6,5 @@
    :matrix-cells nil
    :user-selection-matrix nil
    :game-step "size-selection"
+   :game-status "NOT_STARTED"
    })
