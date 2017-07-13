@@ -33,18 +33,17 @@
         [:div {:style
                          {:width       (str (/ 100 matrix-size) "%")
                           :padding-top (str (/ 100 matrix-size) "%")}
-               :class (if (= 1 userSelection) (if (= 1 cell) "dangerous-mine-box-selected" "safe-mine-box-selected") "mine-box")
+               :class    (if (= 1 userSelection) (if (= 1 cell) "dangerous-mine-box-selected" "safe-mine-box-selected") "mine-box")
                :on-click #(do (setUserSelection rowIndex columnIndex)
                               (re-frame/dispatch [:update-game-status]))
                } cell])) row))
 
 
 (defn play-game []
-  (let [
-        matrix-size (re-frame/subscribe [:matrix-size])
+  (let [matrix-size (re-frame/subscribe [:matrix-size])
         matrix-cells (re-frame/subscribe [:matrix-cells])
         user-selection-matrix (re-frame/subscribe [:user-selection-matrix])
-        ]
+        annotated-matrix-cells (re-frame/subscribe [:annotated-matrix-cells])]
     (r/create-class
       {
        :component-did-mount
@@ -54,19 +53,19 @@
            [deref-matrix-size @matrix-size
             deref-matrix-cells @matrix-cells]
            (->>
-             (range deref-matrix-size)
+             (vec (range deref-matrix-size))
              (map (fn [_] 1),,,)
-             (map (fn [_] (for [x (range deref-matrix-size)] (zeroOrOne))),,,)
+             (map (fn [_] (vec (for [x (range deref-matrix-size)] (zeroOrOne)))),,,)
              (setGameMatrix)
              )
            (initializeUserMatrix deref-matrix-size)))
 
        :reagent-render
        (fn []
-         (let
-           [deref-matrix-size @matrix-size
-            deref-matrix-cells @matrix-cells
-            deref-user-selection-matrix @user-selection-matrix]
+         (println "annotated" annotated-matrix-cells)
+         (let [deref-matrix-size @matrix-size
+               deref-matrix-cells @matrix-cells
+               deref-user-selection-matrix @user-selection-matrix]
            [:div {:class "container"}
             [:h2 "Select the squares that don't have mines"]
             [:div {:class "col-lg-2 col-md-2"}]

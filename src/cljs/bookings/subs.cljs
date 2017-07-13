@@ -3,38 +3,46 @@
   (:require [re-frame.core :as re-frame]))
 
 (re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
+  :name
+  (fn [db]
+    (:name db)))
 
 (re-frame/reg-sub
- :active-panel
- (fn [db _]
-   (:active-panel db)))
+  :active-panel
+  (fn [db _]
+    (:active-panel db)))
 
 (re-frame/reg-sub
- :matrix-size
- (fn [db _]
-   (:matrix-size db)))
+  :matrix-size
+  (fn [db _]
+    (:matrix-size db)))
 
 
 (re-frame/reg-sub
   :game-step
- (fn [db _]
-   (:game-step db)))
+  (fn [db _]
+    (:game-step db)))
 
 
 (re-frame/reg-sub
   :matrix-cells
- (fn [db _]
-   (:matrix-cells db)))
+  (fn [db _]
+    (:matrix-cells db)))
+
+(re-frame/reg-sub
+  :annotated-matrix-cells
+  (fn [db _]
+    (re-frame/subscribe [:matrix-cells]))
+  (fn [matrix-cells _]
+    (println "subscription" matrix-cells) matrix-cells))
+
 
 (re-frame/reg-sub
   :user-selection-matrix
- (fn [db _]
-   (:user-selection-matrix db)))
+  (fn [db _]
+    (:user-selection-matrix db)))
 
 (re-frame/reg-sub
   :game-status
- (fn [db _]
-   (:game-status db)))
+  (fn [db _]
+    (:game-status db)))

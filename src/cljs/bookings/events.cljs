@@ -54,15 +54,15 @@
                              (assoc :game-status "LOST")
                              (assoc  :game-step "game-results")))
 
-(defn- multiplyElementByElement
+(defn- multiply-element-by-element
   [matrix1 matrix2]
   (map (fn [matrix-row user-selection-row] (map * matrix-row user-selection-row)) matrix1 matrix2))
 
-(defn- countNumberOfOccurrencesInMatrix [matrix element] (count (filterv #(= element %) (flatten matrix))))
+(defn- count-number-of-occurrences-in-matrix [matrix element] (count (filterv #(= element %) (flatten matrix))))
 
-(defn- countSafeCells [matrix-cells] (countNumberOfOccurrencesInMatrix matrix-cells 0))
+(defn- countSafeCells [matrix-cells] (count-number-of-occurrences-in-matrix matrix-cells 0))
 
-(defn- countUserPlays [user-selections] (countNumberOfOccurrencesInMatrix user-selections 1))
+(defn- countUserPlays [user-selections] (count-number-of-occurrences-in-matrix user-selections 1))
 
 (defn- inProgressOrWonResult [db matrix-cells user-selection-matrix]
   (if (= (countSafeCells matrix-cells) (countUserPlays user-selection-matrix) )
@@ -78,7 +78,7 @@
     (let
       [user-selection-matrix (:user-selection-matrix db)
        matrix-cells (:matrix-cells db)]
-      (-> (multiplyElementByElement matrix-cells user-selection-matrix)
+      (-> (multiply-element-by-element matrix-cells user-selection-matrix)
           (hasSteppedOnAMine)
-          (if,,, (gameLostResult db) (inProgressOrWonResult db matrix-cells user-selection-matrix)))
+          (if (gameLostResult db) (inProgressOrWonResult db matrix-cells user-selection-matrix)))
       )))
