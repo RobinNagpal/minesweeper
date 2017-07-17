@@ -56,7 +56,8 @@
 
 (defn- multiply-element-by-element
   [matrix1 matrix2]
-  (map (fn [matrix-row user-selection-row] (map * matrix-row user-selection-row)) matrix1 matrix2))
+  (map (fn [matrix-row user-selection-row]
+         (map * matrix-row user-selection-row)) matrix1 matrix2))
 
 (defn- count-number-of-occurrences-in-matrix [matrix element] (count (filterv #(= element %) (flatten matrix))))
 
