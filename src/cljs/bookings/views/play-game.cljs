@@ -43,12 +43,11 @@
          annotatedCellValue (get (get annotated-matrix-cells rowIndex) columnIndex)
          isCellSelected (or (= 1 userSelection) (= :o userSelection))
          isMineCell (= :m annotatedCellValue)
-         annotatedCell (if isCellSelected (vector :span annotatedCellValue) (vector :span))]
+         annotatedCell (if isCellSelected (vector :span (if isMineCell "" annotatedCellValue)) (vector :span))]
         ^{:key (str columnIndex rowIndex "mine-cell-" cell "-val")}
         [:div {:style
-                         {:width      (str (/ 100 matrix-size) "%")
-                          :height     (str (/ 100 matrix-size) "%")
-                          :box-sizing "border-box"}
+                         {:width  (str (/ 100 matrix-size) "%")
+                          :height (str (/ 100 matrix-size) "%")}
                :class    (if isCellSelected
                            (if isMineCell
                              "dangerous-mine-box-selected"
@@ -85,10 +84,24 @@
            [:div {:class "container"}
             [:h2 "Select the squares that don't have mines"]
             [:div {:class "col-lg-2 col-md-2"}]
-            [:div {:class "col-lg-8 col-md-8" :style {:padding "50px 0px 50px 0px"}}
-             [:div (map-indexed
-                     #(createGameRow %1 %2 deref-matrix-size deref-user-selection-matrix deref-annotated-matrix-cells)
-                     deref-matrix-cells)]]
+            [:div {:class "col-lg-8 col-md-8"
+                   :style {
+                           :width       "70%"
+                           :padding-top "70%"
+                           :position    "relative"
+                           }}
+
+             [:div {:style {
+                            :position "absolute"
+                            :height   "100%"
+                            :top      0
+                            :left     0
+                            :bottom   0
+                            :right    0
+                            }}
+              (map-indexed
+                #(createGameRow %1 %2 deref-matrix-size deref-user-selection-matrix deref-annotated-matrix-cells)
+                deref-matrix-cells)]]
             [:div {:class "col-lg-2 col-md-2"}]])
          )
        })))

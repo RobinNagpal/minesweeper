@@ -1,13 +1,16 @@
 @import "bootstrap/bootstrap.less";
 @import "site_variables";
 
-.mine-box{
+.mine-box {
   background-color: @mine-box-background-color;
   box-sizing: border-box;
   border: 3px solid @mine-box-border-color;
   float: left;
   cursor: pointer;
-  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
   &:hover {
     background-color: @mine-box-border-color-hover;
   }
@@ -23,5 +26,11 @@
 
 .dangerous-mine-box-selected {
   &:extend(.mine-box);
-  background-color: #ff0000;
+  background: #ff0000 url("/images/BOMBA.png") no-repeat center;
+  background-size: 65% auto;
+}
+
+body {
+  background-image: url("/images/playstation-pattern.png");
+  background-repeat: repeat;
 }
